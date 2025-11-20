@@ -21,6 +21,7 @@ import {
 import NotificationBadge from '../components/NotificationBadge';
 import LoadingSpinner from '../components/LoadingSpinner';
 import AlertModal from '../components/AlertModal';
+import { espService } from '../services/espService';
 
 const HomeScreen: React.FC = () => {
   const {
@@ -68,7 +69,7 @@ const HomeScreen: React.FC = () => {
     if (!connected) {
       Alert.alert(
         'Sin conexión',
-        'Conéctate al AP del ESP32 para controlar el ventilador.'
+        'Conéctate al AP del ESP32 para controlar el ventilador.',
       );
       return false;
     }
@@ -83,12 +84,11 @@ const HomeScreen: React.FC = () => {
 
     try {
       setSending(true);
-      await useDeviceStore
-        .getState()
-        .testConnection(); // fuerza actualización de estado conexión
 
-      await import('../services/espService')
-        .then((m) => m.espService.controlFan({ fanMode: mode }));
+      // Opcional: puedes forzar testConnection si quieres actualizar estado general
+      await useDeviceStore.getState().testConnection();
+
+      await espService.sendControl({ fanMode: mode });
     } catch (e: any) {
       Alert.alert('Error', e?.message ?? 'No se pudo cambiar el modo');
     } finally {
@@ -110,17 +110,14 @@ const HomeScreen: React.FC = () => {
 
     try {
       setSending(true);
-      await import('../services/espService')
-        .then((m) =>
-          m.espService.controlFan({
-            fanMode: 'MANUAL',
-            fanPwm: pwm,
-          })
-        );
+      await espService.sendControl({
+        fanMode: 'MANUAL',
+        fanPwm: pwm,
+      });
     } catch (e: any) {
       Alert.alert(
         'Error al ajustar velocidad',
-        e?.message ?? 'No se pudo enviar PWM'
+        e?.message ?? 'No se pudo enviar PWM',
       );
     } finally {
       setSending(false);
@@ -133,9 +130,7 @@ const HomeScreen: React.FC = () => {
 
       {/* Estado de conexión */}
       <View style={styles.statusCard}>
-        <NotificationBadge
-          state={connected ? 'BUENA' : null}
-        />
+        <NotificationBadge state={connected ? 'BUENA' : null} />
         <Text style={styles.statusTitle}>
           {connected ? 'Device connected' : 'Device not connected'}
         </Text>
@@ -165,6 +160,7 @@ const HomeScreen: React.FC = () => {
             Current Speed: {fanPwm} / 255 ({Math.round((fanPwm / 255) * 100)}%)
           </Text>
         )}
+
         {/* Segmented Switch */}
         <View style={styles.segmentContainer}>
           <TouchableOpacity

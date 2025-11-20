@@ -1,23 +1,18 @@
 // src/services/espService.ts
-import { useDeviceStore } from '../store/useDeviceStore';
+import { ESP } from '../utils/constants';
 
-async function dynamicRequest(
-  path: string,
-  options?: RequestInit,
-  timeoutMs = 5000,
-) {
-  const { ip, port } = useDeviceStore.getState();
+const API_BASE =
+  ESP.port === 80 ? `${ESP.baseUrl}/api` : `${ESP.baseUrl}:${ESP.port}/api`;
 
-  const baseUrl =
-    port === '80'
-      ? `http://${ip}/api`
-      : `http://${ip}:${port}/api`;
-
+async function request(path: string, options?: RequestInit) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  const timeout = setTimeout(
+    () => controller.abort(),
+    ESP.timeoutMs || 5000,
+  );
 
   try {
-    const res = await fetch(`${baseUrl}${path}`, {
+    const res = await fetch(`${API_BASE}${path}`, {
       ...options,
       signal: controller.signal,
     });
@@ -33,31 +28,60 @@ async function dynamicRequest(
   }
 }
 
+export interface WifiNetwork {
+  ssid: string;
+  rssi: number;
+  secure: boolean;
+}
+
+export interface EspEvent {
+  id?: number;
+  device_id?: string;
+  timestamp?: string;
+  event_type?: string;
+  event_code?: string | null;
+  description?: string | null;
+  air_quality_value?: number | null;
+  air_quality_state?: string | null;
+  severity?: number | null;
+  fan_speed?: number | null;
+  setpoint?: number | null;
+}
+
 export const espService = {
   ping() {
-    return dynamicRequest('/ping', undefined, 4000);
+    return request('/ping');
   },
 
   getStatus() {
-    return dynamicRequest('/status');
+    return request('/status');
   },
 
-  controlFan({
-    fanMode,
-    fanPwm,
-  }: {
-    fanMode: 'AUTO' | 'MANUAL';
+  sendControl(body: {
+    fanMode?: 'AUTO' | 'MANUAL';
     fanPwm?: number;
+    setpoint?: number;
   }) {
-    return dynamicRequest('/control', {
+    return request('/control', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        fanMode,
-        ...(fanMode === 'MANUAL'
-          ? { fanPwm: fanPwm ?? 0 }
-          : {}),
-      }),
+      body: JSON.stringify(body),
     });
+  },
+
+  getWifiNetworks(): Promise<{ ok: boolean; data: WifiNetwork[] }> {
+    return request('/wifi-scan');
+  },
+
+  setWifiConfig(body: { ssid: string; password: string }) {
+    return request('/wifi-config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+  },
+
+  getEvents(): Promise<{ ok: boolean; data: EspEvent[] }> {
+    return request('/events');
   },
 };
