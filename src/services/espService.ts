@@ -1,18 +1,23 @@
 // src/services/espService.ts
-import { ESP } from '../utils/constants';
+import { useDeviceStore } from '../store/useDeviceStore';
 
-const API_BASE =
-  ESP.port === 80 ? `${ESP.baseUrl}/api` : `${ESP.baseUrl}:${ESP.port}/api`;
+async function dynamicRequest(
+  path: string,
+  options?: RequestInit,
+  timeoutMs = 5000,
+) {
+  const { ip, port } = useDeviceStore.getState();
 
-async function request(path: string, options?: RequestInit) {
+  const baseUrl =
+    port === '80'
+      ? `http://${ip}/api`
+      : `http://${ip}:${port}/api`;
+
   const controller = new AbortController();
-  const timeout = setTimeout(
-    () => controller.abort(),
-    ESP.timeoutMs || 5000,
-  );
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    const res = await fetch(`${API_BASE}${path}`, {
+    const res = await fetch(`${baseUrl}${path}`, {
       ...options,
       signal: controller.signal,
     });
@@ -30,20 +35,29 @@ async function request(path: string, options?: RequestInit) {
 
 export const espService = {
   ping() {
-    return request('/ping');
+    return dynamicRequest('/ping', undefined, 4000);
   },
+
   getStatus() {
-    return request('/status');
+    return dynamicRequest('/status');
   },
-  sendControl(body: {
-    fanMode?: 'AUTO' | 'MANUAL';
+
+  controlFan({
+    fanMode,
+    fanPwm,
+  }: {
+    fanMode: 'AUTO' | 'MANUAL';
     fanPwm?: number;
-    setpoint?: number;
   }) {
-    return request('/control', {
+    return dynamicRequest('/control', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        fanMode,
+        ...(fanMode === 'MANUAL'
+          ? { fanPwm: fanPwm ?? 0 }
+          : {}),
+      }),
     });
   },
 };
