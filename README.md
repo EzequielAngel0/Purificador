@@ -39,7 +39,7 @@ Aplicación móvil desarrollada con **React Native CLI (Android-first)** que se 
 ## 📡 Diagrama de Bloques
 
 <p align="center">
-  <img src="./docs/diagram-block.svg" width="90%" />
+  <img src="./docs/diagram-blocks-closed-loop.svg" width="90%" />
 </p>
 
 ---
@@ -47,7 +47,7 @@ Aplicación móvil desarrollada con **React Native CLI (Android-first)** que se 
 ## ⚡ Diagrama Electrónico — MOSFET
 
 <p align="center">
-  <img src="./docs/diagram-mosfet.svg" width="90%" />
+  <img src="./docs/diagram-mosfet-1_8v.svg" width="90%" />
 </p>
 
 ---
