@@ -12,10 +12,16 @@ export interface DeviceState {
   lastPingAt: number | null;
   error: string | null;
 
+  // Info AP real reportada por el ESP32
+  apIp: string | null;
+
   // Info STA del ESP32 (red con Internet)
   staConnected: boolean;
   staIp: string | null;
   staSsid: string | null;
+
+  // Estado del sensor MQ135
+  sensorReady: boolean;
 
   // Redes disponibles para STA
   wifiNetworks: WifiNetwork[];
@@ -44,9 +50,13 @@ export const useDeviceStore = create<DeviceState>((set, get) => ({
   lastPingAt: null,
   error: null,
 
+  apIp: null,
+
   staConnected: false,
   staIp: null,
   staSsid: null,
+
+  sensorReady: false,
 
   wifiNetworks: [],
   scanning: false,
@@ -66,25 +76,41 @@ export const useDeviceStore = create<DeviceState>((set, get) => ({
         throw new Error('El dispositivo respondió con ok = false');
       }
 
-      const net = res.data?.net ?? {};
+      const data = res.data ?? {};
+      const net = data.net ?? {};
+
+      const apIp =
+        typeof net.apIp === 'string' && net.apIp.length > 0
+          ? net.apIp
+          : null;
+
       const staConnected = !!net.staConnected;
-      const staIp = typeof net.staIp === 'string' ? net.staIp : null;
-      const staSsid = typeof net.staSsid === 'string' ? net.staSsid : null;
+      const staIp = typeof net.staIp === 'string' && net.staIp.length > 0
+        ? net.staIp
+        : null;
+      const staSsid = typeof net.staSsid === 'string' && net.staSsid.length > 0
+        ? net.staSsid
+        : null;
+
+      const sensorReady = !!data.sensorReady;
 
       set({
         connected: true,
         connecting: false,
         lastPingAt: Date.now(),
         error: null,
+        apIp,
         staConnected,
         staIp,
         staSsid,
+        sensorReady,
       });
     } catch (e: any) {
       set({
         connected: false,
         connecting: false,
         error: e?.message ?? 'No se pudo conectar con el ESP32',
+        sensorReady: false,
       });
     }
   },

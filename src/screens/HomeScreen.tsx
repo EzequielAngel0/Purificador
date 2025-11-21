@@ -29,6 +29,8 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import AlertModal from '../components/AlertModal';
 import { espService } from '../services/espService';
 
+const MAX_PWM = 255;
+
 const HomeScreen: React.FC = () => {
   const {
     airQualityValue,
@@ -49,7 +51,8 @@ const HomeScreen: React.FC = () => {
 
   const { connected } = useDeviceStore();
 
-  const [localPwm, setLocalPwm] = useState(fanPwm);
+  // Slider lógico 0–100 (se mapea linealmente a 0–255 PWM)
+  const [manualSlider, setManualSlider] = useState(0);
   const [localSetpoint, setLocalSetpoint] = useState(fanSetpoint);
   const [sending, setSending] = useState(false);
 
@@ -61,8 +64,7 @@ const HomeScreen: React.FC = () => {
   const aqiBorderColor = getAirQualityBorderColor(airQualityState);
   const aqiLabel = getAirQualityLabel(airQualityState);
 
-  const pwmPercent = Math.round((localPwm / 255) * 100);
-  const currentFanPercent = Math.round((fanPwm / 255) * 100);
+  const currentFanPercent = Math.round((fanPwm / MAX_PWM) * 100);
 
   // Rango del setpoint (ajusta según tu lógica en el ESP32)
   const SETPOINT_MIN = 0;
@@ -73,9 +75,14 @@ const HomeScreen: React.FC = () => {
   const loopRef = useRef<Animated.CompositeAnimation | null>(null);
   const prevAirState = useRef<AirQualityState | null>(null);
 
-  // Sincronizar slider de PWM si cambia desde API
+  // Sincronizar slider de PWM lógico si cambia desde API
   useEffect(() => {
-    setLocalPwm(fanPwm);
+    if (fanPwm > 0) {
+      const percent = Math.round((fanPwm / MAX_PWM) * 100);
+      setManualSlider(percent);
+    } else {
+      setManualSlider(0);
+    }
   }, [fanPwm]);
 
   // Sincronizar slider de setpoint si cambia desde store/API
@@ -87,9 +94,7 @@ const HomeScreen: React.FC = () => {
   useEffect(() => {
     if (!connected) return;
 
-    // Primer fetch inmediato
     fetchStatus();
-
     const id = setInterval(fetchStatus, 4500);
 
     return () => clearInterval(id);
@@ -117,8 +122,7 @@ const HomeScreen: React.FC = () => {
     const maxDuration = 8000; // lento
 
     const duration =
-      maxDuration -
-      ((maxDuration - minDuration) * speedPercent) / 100;
+      maxDuration - ((maxDuration - minDuration) * speedPercent) / 100;
 
     rotateAnim.setValue(0);
     loopRef.current?.stop();
@@ -163,23 +167,36 @@ const HomeScreen: React.FC = () => {
       setSending(true);
 
       if (mode === 'MANUAL') {
-        // Al entrar a MANUAL usamos el último PWM manual
-        const targetPwm =
-          lastManualPwm > 0 ? lastManualPwm : fanPwm > 0 ? fanPwm : 0;
+        // Al entrar a MANUAL usamos:
+        // 1) último PWM manual si existe
+        // 2) si no, el PWM actual
+        // 3) si tampoco, 0
+        let targetPwm: number;
+
+        if (lastManualPwm > 0) {
+          targetPwm = lastManualPwm;
+        } else if (fanPwm > 0) {
+          targetPwm = fanPwm;
+        } else {
+          targetPwm = 0;
+        }
+
+        targetPwm = Math.max(0, Math.min(targetPwm, MAX_PWM));
 
         setFanMode('MANUAL');
         setFanPwm(targetPwm);
-        setLocalPwm(targetPwm);
+        setLastManualPwm(targetPwm);
+        setManualSlider(
+          Math.round((targetPwm / MAX_PWM) * 100),
+        );
 
         await useDeviceStore.getState().testConnection();
         await espService.sendControl({
           fanMode: 'MANUAL',
           fanPwm: targetPwm,
-          // puedes incluir setpoint si también lo usas en MANUAL:
-          // setpoint: fanSetpoint,
         });
       } else {
-        // AUTO: el ESP32 se regula según el setpoint actual
+        // AUTO: el ESP32 se regula según el setpoint actual (firmware)
         setFanMode('AUTO');
 
         await useDeviceStore.getState().testConnection();
@@ -197,13 +214,13 @@ const HomeScreen: React.FC = () => {
 
   // Slider PWM (velocidad) – solo MANUAL
   const handlePwmChange = (value: number) => {
-    setLocalPwm(value);
+    setManualSlider(value);
   };
 
   const handlePwmCommit = async (value: number) => {
     if (!ensureConnected()) return;
 
-    const pwm = Math.round(value);
+    const pwm = Math.round((value / 100) * MAX_PWM);
     setFanPwm(pwm);
     setLastManualPwm(pwm);
 
@@ -212,7 +229,6 @@ const HomeScreen: React.FC = () => {
       await espService.sendControl({
         fanMode: 'MANUAL',
         fanPwm: pwm,
-        // setpoint: fanSetpoint,
       });
     } catch (e: any) {
       Alert.alert(
@@ -238,7 +254,6 @@ const HomeScreen: React.FC = () => {
     try {
       setSending(true);
       await espService.sendControl({
-        // modo actual (puede ser MANUAL, pero el setpoint se usará sobre todo en AUTO)
         fanMode,
         fanPwm,
         setpoint: sp,
@@ -361,14 +376,16 @@ const HomeScreen: React.FC = () => {
             <View style={styles.sliderBlock}>
               <View style={styles.sliderHeader}>
                 <Text style={styles.sliderLabel}>Velocidad del ventilador</Text>
-                <Text style={styles.sliderPercent}>{pwmPercent}%</Text>
+                <Text style={styles.sliderPercent}>
+                  {manualSlider}%
+                </Text>
               </View>
 
               <Slider
                 minimumValue={0}
-                maximumValue={255}
+                maximumValue={100}
                 step={1}
-                value={localPwm}
+                value={manualSlider}
                 onValueChange={handlePwmChange}
                 onSlidingComplete={handlePwmCommit}
                 minimumTrackTintColor="#3b82f6"

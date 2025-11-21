@@ -1,5 +1,5 @@
 // src/screens/SettingsScreen.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ScrollView,
   View,
@@ -18,9 +18,11 @@ const SettingsScreen: React.FC = () => {
     port,
     connected,
     connecting,
+    apIp,
     staConnected,
     staIp,
     staSsid,
+    sensorReady,
     wifiNetworks,
     scanning,
     configuring,
@@ -36,6 +38,26 @@ const SettingsScreen: React.FC = () => {
   const [selectedSsid, setSelectedSsid] = useState<string | null>(null);
   const [staPassword, setStaPassword] = useState('');
 
+  // Auto-ping: mientras el sensor NO esté listo, intentamos ping cada 5 s.
+  useEffect(() => {
+    // Primer intento al abrir la pantalla
+    testConnection().catch(() => {});
+
+    let interval: ReturnType<typeof setInterval> | null = null;
+
+    if (!sensorReady) {
+      interval = setInterval(() => {
+        testConnection().catch(() => {});
+      }, 5000);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [sensorReady, testConnection]);
+
   const handleSelectNetwork = (item: WifiNetwork) => {
     setSelectedSsid(item.ssid);
     clearError();
@@ -46,19 +68,62 @@ const SettingsScreen: React.FC = () => {
     configureSta(selectedSsid, staPassword);
   };
 
+  const buttonDisabled = connecting || !sensorReady;
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.header}>Air Purifier</Text>
+      <Text style={styles.header}>Estado de red</Text>
 
-      {/* Card: Conexión al ESP32 (AP) */}
+      {/* Estado general de red + sensor */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>ESP32 Access Point</Text>
         <Text style={styles.cardSubtitle}>
-          Conéctate a la red Wi-Fi creada por el ESP32 (AP) para controlar el
-          purificador.
+          El teléfono se conecta al AP del ESP32. El ESP32, por STA, se conecta
+          a una red con Internet para enviar datos a Supabase.
         </Text>
 
-        <Text style={styles.label}>IP address (AP)</Text>
+        <View style={styles.infoRow}>
+          <Text style={styles.infoLabel}>IP actual del AP (ESP32)</Text>
+          <Text style={styles.infoValue}>{apIp ?? ip ?? 'Desconocida'}</Text>
+        </View>
+
+        <View style={styles.infoRow}>
+          <Text style={styles.infoLabel}>IP actual del STA (ESP32 → Wi-Fi)</Text>
+          <Text style={styles.infoValue}>
+            {staConnected && staIp ? staIp : 'No conectado'}
+          </Text>
+        </View>
+
+        <View style={styles.infoRow}>
+          <Text style={styles.infoLabel}>Estado AP</Text>
+          <Text style={styles.infoValue}>
+            {connected ? 'Conectado al ESP32' : 'No conectado al ESP32'}
+          </Text>
+        </View>
+
+        <View style={styles.infoRow}>
+          <Text style={styles.infoLabel}>Estado STA</Text>
+          <Text style={styles.infoValue}>
+            {staConnected
+              ? `Conectado a ${staSsid ?? '(SSID desconocido)'}`
+              : 'STA no conectado'}
+          </Text>
+        </View>
+
+        <View style={styles.infoRow}>
+          <Text style={styles.infoLabel}>Sensor MQ135</Text>
+          <Text style={styles.infoValue}>
+            {sensorReady
+              ? 'Listo (ya está entregando lecturas)'
+              : 'Calentando / sin lecturas estables'}
+          </Text>
+        </View>
+      </View>
+
+      {/* Configuración de la IP que usa la app para el AP */}
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Conexión al AP del ESP32 (App)</Text>
+
+        <Text style={styles.label}>IP del ESP32 (AP) usada por la app</Text>
         <TextInput
           style={styles.input}
           value={ip}
@@ -68,7 +133,7 @@ const SettingsScreen: React.FC = () => {
           placeholderTextColor="#7c7f8a"
         />
 
-        <Text style={styles.label}>Port</Text>
+        <Text style={styles.label}>Puerto HTTP</Text>
         <TextInput
           style={styles.input}
           value={port}
@@ -78,34 +143,38 @@ const SettingsScreen: React.FC = () => {
           placeholderTextColor="#7c7f8a"
         />
 
+        {/* Botón para probar conexión (bloqueado mientras el sensor no está listo) */}
         <TouchableOpacity
           style={[
             styles.button,
-            connected && styles.buttonSecondary,
-            connecting && styles.buttonDisabled,
+            connected && styles.buttonConnected,
+            buttonDisabled && styles.buttonDisabled,
           ]}
           onPress={testConnection}
-          disabled={connecting}
+          disabled={buttonDisabled}
         >
           <Text style={styles.buttonText}>
-            {connecting
-              ? 'Testing...'
+            {!sensorReady
+              ? 'Esperando a que el sensor esté listo...'
+              : connecting
+              ? 'Probando...'
               : connected
-              ? 'Re-test connection'
-              : 'Test connection'}
+              ? 'Re-probar conexión con ESP32'
+              : 'Probar conexión con ESP32'}
           </Text>
         </TouchableOpacity>
 
         <Text style={styles.statusText}>
-          {connected ? 'Status: Connected to ESP32 (AP)' : 'Status: Not connected'}
+          AP: {connected ? 'Conectado' : 'No conectado'}
         </Text>
       </View>
 
-      {/* Card: Configuración STA del ESP32 */}
+      {/* Configuración STA */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Wi-Fi (STA) for Internet</Text>
+        <Text style={styles.cardTitle}>Red STA del ESP32 (Internet)</Text>
         <Text style={styles.cardSubtitle}>
-          El ESP32 se conectará a esta red para enviar alertas a Supabase.
+          Aquí configuras a qué Wi-Fi se conecta el ESP32 por STA para tener
+          acceso a Internet.
         </Text>
 
         <TouchableOpacity
@@ -114,13 +183,12 @@ const SettingsScreen: React.FC = () => {
           disabled={scanning}
         >
           <Text style={styles.buttonText}>
-            {scanning ? 'Scanning...' : 'Scan networks'}
+            {scanning ? 'Escaneando...' : 'Escanear redes Wi-Fi'}
           </Text>
         </TouchableOpacity>
 
         {wifiNetworks.length > 0 && (
           <View style={styles.networkListContainer}>
-            <Text style={styles.sectionTitle}>Available networks</Text>
             <FlatList
               data={wifiNetworks}
               keyExtractor={(item) => item.ssid + String(item.rssi)}
@@ -144,7 +212,7 @@ const SettingsScreen: React.FC = () => {
                         {item.ssid || '<Hidden SSID>'}
                       </Text>
                       <Text style={styles.networkMeta}>
-                        {item.secure ? 'Secure' : 'Open'} · RSSI {item.rssi} dBm
+                        {item.secure ? 'Segura' : 'Abierta'} · RSSI {item.rssi} dBm
                       </Text>
                     </View>
                   </TouchableOpacity>
@@ -154,22 +222,22 @@ const SettingsScreen: React.FC = () => {
           </View>
         )}
 
-        <Text style={styles.label}>Selected SSID</Text>
+        <Text style={styles.label}>SSID seleccionado</Text>
         <TextInput
           style={[styles.input, !selectedSsid && styles.inputDisabled]}
           value={selectedSsid ?? ''}
           onChangeText={setSelectedSsid}
-          placeholder="Select a network from the list"
+          placeholder="Selecciona una red de la lista"
           placeholderTextColor="#7c7f8a"
         />
 
-        <Text style={styles.label}>Password</Text>
+        <Text style={styles.label}>Contraseña</Text>
         <TextInput
           style={styles.input}
           value={staPassword}
           onChangeText={setStaPassword}
           secureTextEntry
-          placeholder="Wi-Fi password"
+          placeholder="Contraseña Wi-Fi"
           placeholderTextColor="#7c7f8a"
         />
 
@@ -183,14 +251,14 @@ const SettingsScreen: React.FC = () => {
           disabled={configuring || !selectedSsid || !staPassword}
         >
           <Text style={styles.buttonText}>
-            {configuring ? 'Connecting...' : 'Connect ESP32 to Wi-Fi'}
+            {configuring ? 'Conectando...' : 'Conectar ESP32 a Wi-Fi'}
           </Text>
         </TouchableOpacity>
 
         <Text style={styles.statusText}>
           {staConnected
-            ? `STA: Connected to ${staSsid ?? '(unknown)'} (${staIp ?? ''})`
-            : 'STA: Not connected'}
+            ? `STA: Conectado a ${staSsid ?? '(SSID desconocido)'}`
+            : 'STA: No conectado'}
         </Text>
       </View>
 
@@ -199,12 +267,6 @@ const SettingsScreen: React.FC = () => {
           <Text style={styles.errorText}>{error}</Text>
         </View>
       )}
-
-      <Text style={styles.note}>
-        Nota: el teléfono debe conectarse por Wi-Fi al AP del ESP32 (ESP32_AIR).
-        El ESP32, a su vez, se conecta a otra red (STA) para acceder a Internet
-        y enviar/leer eventos desde Supabase.
-      </Text>
     </ScrollView>
   );
 };
@@ -236,12 +298,25 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: '#e5e7eb',
+    marginBottom: 6,
   },
   cardSubtitle: {
     fontSize: 13,
     color: '#9ca3af',
-    marginTop: 4,
     marginBottom: 12,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
+  infoLabel: {
+    fontSize: 13,
+    color: '#9ca3af',
+  },
+  infoValue: {
+    fontSize: 13,
+    color: '#e5e7eb',
   },
   label: {
     fontSize: 13,
@@ -269,8 +344,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#0ea5e9',
   },
-  buttonSecondary: {
-    backgroundColor: '#1f2937',
+  buttonConnected: {
+    backgroundColor: '#22c55e',
   },
   buttonDisabled: {
     opacity: 0.5,
@@ -288,12 +363,6 @@ const styles = StyleSheet.create({
   networkListContainer: {
     marginTop: 12,
     maxHeight: 220,
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#e5e7eb',
-    marginBottom: 4,
   },
   networkItem: {
     paddingVertical: 8,
@@ -328,11 +397,6 @@ const styles = StyleSheet.create({
   errorText: {
     color: '#fecaca',
     fontSize: 12,
-  },
-  note: {
-    marginTop: 12,
-    fontSize: 12,
-    color: '#6b7280',
   },
 });
 
