@@ -1,0 +1,290 @@
+<svg viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradSensor" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3498DB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2874A6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradESP32" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#16A085;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#117A65;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradVentilador" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E67E22;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#CA6F1E;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradApp" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#9B59B6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7D3C98;stop-opacity:1" />
+    </linearGradient>
+    <filter id="sombra">
+      <feDropShadow dx="3" dy="3" stdDeviation="4" flood-opacity="0.3"/>
+    </filter>
+    <marker id="flechaSenal" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#3498DB" />
+    </marker>
+    <marker id="flechaControl" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#16A085" />
+    </marker>
+    <marker id="flechaRetro" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#E74C3C" />
+    </marker>
+    <marker id="flechaWiFi" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#9B59B6" />
+    </marker>
+  </defs>
+  
+  <!-- Fondo -->
+  <rect width="1400" height="900" fill="#F8F9FA"/>
+  
+  <!-- Título Principal -->
+  <text x="700" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="bold" text-anchor="middle" fill="#2C3E50">
+    Sistema de Purificación de Aire — Control en Lazo Cerrado
+  </text>
+  <text x="700" y="72" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">
+    ESP32 + MQ135 + Ventilador PWM + App React Native
+  </text>
+  
+  <!-- BLOQUE 1: Sensor MQ135 -->
+  <g filter="url(#sombra)">
+    <rect x="100" y="130" width="220" height="140" rx="12" fill="url(#gradSensor)" stroke="#2874A6" stroke-width="3"/>
+    <text x="210" y="165" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="white">
+      SENSOR MQ135
+    </text>
+    <text x="210" y="192" font-family="Arial, sans-serif" font-size="13" text-anchor="middle" fill="#EBF5FB">
+      Medición de Calidad del Aire
+    </text>
+    <text x="210" y="215" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">
+      • CO₂, NH₃, NOₓ, Benceno
+    </text>
+    <text x="210" y="235" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">
+      • Salida: 0-1023 PPM
+    </text>
+    <text x="210" y="255" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#D6EAF8">
+      GPIO34 (Entrada ADC)
+    </text>
+  </g>
+  
+  <!-- Flecha 1: Sensor → ESP32 -->
+  <line x1="320" y1="200" x2="400" y2="200" stroke="#3498DB" stroke-width="4" marker-end="url(#flechaSenal)"/>
+  <text x="360" y="188" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#2C3E50">Señal</text>
+  <text x="360" y="220" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#7F8C8D">Analógica</text>
+  
+  <!-- BLOQUE 2: ESP32 (Procesamiento Central) -->
+  <g filter="url(#sombra)">
+    <rect x="410" y="130" width="260" height="140" rx="12" fill="url(#gradESP32)" stroke="#117A65" stroke-width="3"/>
+    <text x="540" y="165" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="white">
+      ESP32 DevKit
+    </text>
+    <text x="540" y="188" font-family="Arial, sans-serif" font-size="13" text-anchor="middle" fill="#D5F4E6">
+      Unidad de Procesamiento y Control
+    </text>
+    <text x="540" y="210" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="white">
+      ✓ Lectura ADC (GPIO34)
+    </text>
+    <text x="540" y="228" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="white">
+      ✓ Algoritmo de decisión (PPM → Estado)
+    </text>
+    <text x="540" y="246" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="white">
+      ✓ Generación PWM (GPIO25)
+    </text>
+    <text x="540" y="264" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="white">
+      ✓ Conectividad WiFi (AP + STA)
+    </text>
+  </g>
+  
+  <!-- Flecha 2: ESP32 → Ventilador -->
+  <line x1="670" y1="200" x2="760" y2="200" stroke="#16A085" stroke-width="4" marker-end="url(#flechaControl)"/>
+  <text x="715" y="188" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#2C3E50">Control</text>
+  <text x="715" y="220" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#7F8C8D">PWM (0-100%)</text>
+  
+  <!-- BLOQUE 3: Control del Ventilador -->
+  <g filter="url(#sombra)">
+    <rect x="770" y="130" width="240" height="140" rx="12" fill="url(#gradVentilador)" stroke="#CA6F1E" stroke-width="3"/>
+    <text x="890" y="165" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="white">
+      VENTILADOR DC
+    </text>
+    <text x="890" y="188" font-family="Arial, sans-serif" font-size="13" text-anchor="middle" fill="#FDEBD0">
+      Control por MOSFET
+    </text>
+    <circle cx="890" cy="215" r="25" fill="none" stroke="white" stroke-width="3"/>
+    <path d="M 875 215 L 905 215 M 890 200 L 890 230" stroke="white" stroke-width="2"/>
+    <path d="M 880 205 L 890 215 L 900 205" fill="white"/>
+    <text x="890" y="252" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="white">
+      1.8V — Velocidad Variable
+    </text>
+  </g>
+  
+  <!-- Flecha 3: Aire filtrado -->
+  <line x1="1010" y1="200" x2="1100" y2="200" stroke="#27AE60" stroke-width="4" marker-end="url(#flechaControl)"/>
+  <text x="1055" y="188" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#27AE60">Aire</text>
+  <text x="1055" y="220" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#27AE60">Filtrado</text>
+  
+  <!-- Ambiente/Aire -->
+  <g filter="url(#sombra)">
+    <ellipse cx="1180" cy="200" rx="90" ry="70" fill="#D5F4E6" stroke="#27AE60" stroke-width="3"/>
+    <text x="1180" y="195" font-family="Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="middle" fill="#117A65">
+      AMBIENTE
+    </text>
+    <text x="1180" y="215" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#16A085">
+      Calidad del Aire
+    </text>
+  </g>
+  
+  <!-- Flecha 4: Retroalimentación -->
+  <path d="M 1180 270 L 1180 340 L 210 340 L 210 270" 
+        stroke="#E74C3C" stroke-width="4" fill="none" 
+        stroke-dasharray="8,4" marker-end="url(#flechaRetro)"/>
+  <rect x="600" y="325" width="200" height="35" rx="8" fill="#E74C3C" opacity="0.9"/>
+  <text x="700" y="348" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="white">
+    RETROALIMENTACIÓN
+  </text>
+  
+  <!-- Estados de Calidad del Aire -->
+  <g>
+    <rect x="80" y="410" width="1240" height="35" rx="8" fill="#34495E"/>
+    <text x="700" y="433" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">
+      ESTADOS DE CALIDAD DEL AIRE
+    </text>
+  </g>
+  
+  <!-- Estado 1: BUENA -->
+  <g filter="url(#sombra)">
+    <rect x="100" y="460" width="270" height="90" rx="10" fill="#27AE60" stroke="#1E8449" stroke-width="3"/>
+    <text x="235" y="490" font-family="Arial, sans-serif" font-size="17" font-weight="bold" text-anchor="middle" fill="white">
+      BUENA (&lt; 200 PPM)
+    </text>
+    <text x="235" y="512" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#E8F8F5">
+      Ventilador: 25% velocidad
+    </text>
+    <text x="235" y="532" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#D5F4E6">
+      Modo ahorro de energía
+    </text>
+  </g>
+  
+  <!-- Estado 2: MODERADA -->
+  <g filter="url(#sombra)">
+    <rect x="390" y="460" width="270" height="90" rx="10" fill="#F39C12" stroke="#D68910" stroke-width="3"/>
+    <text x="525" y="490" font-family="Arial, sans-serif" font-size="17" font-weight="bold" text-anchor="middle" fill="white">
+      MODERADA (200-400)
+    </text>
+    <text x="525" y="512" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#FEF5E7">
+      Ventilador: 50% velocidad
+    </text>
+    <text x="525" y="532" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#FCF3CF">
+      Filtración regular
+    </text>
+  </g>
+  
+  <!-- Estado 3: MALA -->
+  <g filter="url(#sombra)">
+    <rect x="680" y="460" width="270" height="90" rx="10" fill="#E67E22" stroke="#CA6F1E" stroke-width="3"/>
+    <text x="815" y="490" font-family="Arial, sans-serif" font-size="17" font-weight="bold" text-anchor="middle" fill="white">
+      MALA (400-600)
+    </text>
+    <text x="815" y="512" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#FEF5E7">
+      Ventilador: 75% velocidad
+    </text>
+    <text x="815" y="532" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#FDEBD0">
+      Alerta activada
+    </text>
+  </g>
+  
+  <!-- Estado 4: MUY MALA -->
+  <g filter="url(#sombra)">
+    <rect x="970" y="460" width="270" height="90" rx="10" fill="#C0392B" stroke="#922B21" stroke-width="3"/>
+    <text x="1105" y="490" font-family="Arial, sans-serif" font-size="17" font-weight="bold" text-anchor="middle" fill="white">
+      MUY MALA (&gt; 600)
+    </text>
+    <text x="1105" y="512" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#FADBD8">
+      Ventilador: 100% velocidad
+    </text>
+    <text x="1105" y="532" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#F5B7B1">
+      Alerta crítica enviada
+    </text>
+  </g>
+  
+  <!-- Conectividad -->
+  <g>
+    <rect x="80" y="580" width="1240" height="35" rx="8" fill="#34495E"/>
+    <text x="700" y="603" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">
+      CONECTIVIDAD Y COMUNICACIÓN
+    </text>
+  </g>
+  
+  <!-- WiFi AP (App Local) -->
+  <g filter="url(#sombra)">
+    <rect x="120" y="640" width="350" height="120" rx="10" fill="url(#gradApp)" stroke="#7D3C98" stroke-width="3"/>
+    <text x="295" y="675" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">
+      WiFi AP (Punto de Acceso)
+    </text>
+    <text x="295" y="698" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#F4ECF7">
+      ✓ Conexión directa ESP32 ↔ App móvil
+    </text>
+    <text x="295" y="718" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#F4ECF7">
+      ✓ Control manual del ventilador
+    </text>
+    <text x="295" y="738" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#F4ECF7">
+      ✓ Monitoreo en tiempo real (sin Internet)
+    </text>
+  </g>
+  
+  <!-- WiFi STA (Internet) -->
+  <g filter="url(#sombra)">
+    <rect x="510" y="640" width="350" height="120" rx="10" fill="url(#gradApp)" stroke="#7D3C98" stroke-width="3"/>
+    <text x="685" y="675" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">
+      WiFi STA (Cliente)
+    </text>
+    <text x="685" y="698" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#F4ECF7">
+      ✓ Conexión ESP32 → Internet
+    </text>
+    <text x="685" y="718" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#F4ECF7">
+      ✓ Envío de alertas a Supabase
+    </text>
+    <text x="685" y="738" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#F4ECF7">
+      ✓ Historial en la nube
+    </text>
+  </g>
+  
+  <!-- App React Native -->
+  <g filter="url(#sombra)">
+    <rect x="900" y="640" width="350" height="120" rx="10" fill="#34495E" stroke="#2C3E50" stroke-width="3"/>
+    <text x="1075" y="675" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">
+      App Móvil React Native
+    </text>
+    <text x="1075" y="698" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#ECF0F1">
+      ✓ Interfaz de usuario táctil
+    </text>
+    <text x="1075" y="718" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#ECF0F1">
+      ✓ Gráficas de calidad del aire
+    </text>
+    <text x="1075" y="738" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#ECF0F1">
+      ✓ Notificaciones push
+    </text>
+  </g>
+  
+  <!-- Flechas de conectividad -->
+  <line x1="470" y1="700" x2="500" y2="700" stroke="#9B59B6" stroke-width="3" marker-end="url(#flechaWiFi)"/>
+  <line x1="860" y1="700" x2="890" y2="700" stroke="#9B59B6" stroke-width="3" marker-end="url(#flechaWiFi)"/>
+  
+  <!-- Conexión ESP32 con WiFi -->
+  <line x1="540" y1="270" x2="540" y2="310" stroke="#9B59B6" stroke-width="3" stroke-dasharray="5,3"/>
+  <line x1="540" y1="310" x2="295" y2="310" stroke="#9B59B6" stroke-width="3" stroke-dasharray="5,3"/>
+  <line x1="295" y1="310" x2="295" y2="640" stroke="#9B59B6" stroke-width="3" stroke-dasharray="5,3" marker-end="url(#flechaWiFi)"/>
+  
+  <line x1="540" y1="310" x2="685" y2="310" stroke="#9B59B6" stroke-width="3" stroke-dasharray="5,3"/>
+  <line x1="685" y1="310" x2="685" y2="640" stroke="#9B59B6" stroke-width="3" stroke-dasharray="5,3" marker-end="url(#flechaWiFi)"/>
+  
+  <!-- Cuadro informativo final -->
+  <g filter="url(#sombra)">
+    <rect x="100" y="790" width="1200" height="80" rx="10" fill="#ECF0F1" stroke="#34495E" stroke-width="2"/>
+    <text x="700" y="820" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#2C3E50">
+      Características del Sistema de Lazo Cerrado
+    </text>
+    <text x="700" y="845" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#34495E">
+      ⚙️ Monitoreo automático continuo  •  🔄 Ajuste dinámico de velocidad del ventilador  •  📊 Retroalimentación en tiempo real
+    </text>
+    <text x="700" y="863" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#34495E">
+      📱 Control remoto vía app móvil  •  ☁️ Almacenamiento en la nube  •  🔔 Sistema de alertas inteligente
+    </text>
+  </g>
+</svg>

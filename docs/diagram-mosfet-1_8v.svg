@@ -1,0 +1,368 @@
+<svg viewBox="0 0 1600 1100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="sombra">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+    <marker id="flechaRoja" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L7,3 z" fill="#E74C3C" />
+    </marker>
+    <marker id="flechaNegra" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L7,3 z" fill="#2C3E50" />
+    </marker>
+    <marker id="flechaAzul" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L7,3 z" fill="#3498DB" />
+    </marker>
+    <marker id="flechaVerde" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L7,3 z" fill="#27AE60" />
+    </marker>
+  </defs>
+  
+  <!-- Fondo -->
+  <rect width="1600" height="1100" fill="#FFFFFF"/>
+  
+  <!-- Título -->
+  <text x="800" y="50" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#2C3E50">
+    Control del Ventilador con MOSFET — Alimentación 1.8V
+  </text>
+  <text x="800" y="80" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#7F8C8D">
+    Diagrama Electrónico Completo — ESP32 + MQ135 + MOSFET IRLZ44N + Regulador 1.8V
+  </text>
+  
+  <!-- Línea separadora superior -->
+  <line x1="100" y1="100" x2="1500" y2="100" stroke="#BDC3C7" stroke-width="2"/>
+  
+  <!-- ==================== SECCIÓN SUPERIOR: COMPONENTES PRINCIPALES ==================== -->
+  
+  <!-- ESP32 DevKit -->
+  <g filter="url(#sombra)">
+    <rect x="200" y="150" width="280" height="380" rx="10" fill="#34495E" stroke="#2C3E50" stroke-width="4"/>
+    <rect x="200" y="150" width="280" height="55" rx="10" fill="#2C3E50"/>
+    <text x="340" y="190" font-family="Arial, sans-serif" font-size="22" font-weight="bold" text-anchor="middle" fill="white">
+      ESP32 DevKit
+    </text>
+    
+    <!-- Pines Izquierda -->
+    <text x="180" y="245" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="end" fill="#95A5A6">Entradas</text>
+    
+    <circle cx="200" cy="270" r="8" fill="#27AE60"/>
+    <text x="175" y="276" font-family="Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="end" fill="#2C3E50">GPIO34</text>
+    <text x="175" y="292" font-family="Arial, sans-serif" font-size="11" text-anchor="end" fill="#7F8C8D">ADC (Sensor)</text>
+    
+    <circle cx="200" cy="350" r="8" fill="#2C3E50"/>
+    <text x="175" y="356" font-family="Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="end" fill="#2C3E50">GND</text>
+    
+    <circle cx="200" cy="420" r="8" fill="#E74C3C"/>
+    <text x="175" y="426" font-family="Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="end" fill="#E74C3C">3.3V</text>
+    
+    <!-- Pines Derecha -->
+    <text x="500" y="245" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="start" fill="#95A5A6">Salidas</text>
+    
+    <circle cx="480" cy="270" r="8" fill="#3498DB"/>
+    <text x="505" y="276" font-family="Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="start" fill="#2C3E50">GPIO25</text>
+    <text x="505" y="292" font-family="Arial, sans-serif" font-size="11" text-anchor="start" fill="#7F8C8D">PWM (MOSFET)</text>
+    
+    <circle cx="480" cy="350" r="8" fill="#F39C12"/>
+    <text x="505" y="356" font-family="Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="start" fill="#2C3E50">GPIO2</text>
+    <text x="505" y="372" font-family="Arial, sans-serif" font-size="11" text-anchor="start" fill="#7F8C8D">LED Indicador</text>
+    
+    <circle cx="480" cy="490" r="8" fill="#E74C3C"/>
+    <text x="505" y="496" font-family="Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="start" fill="#E74C3C">5V</text>
+    <text x="505" y="512" font-family="Arial, sans-serif" font-size="11" text-anchor="start" fill="#7F8C8D">(Entrada USB)</text>
+  </g>
+  
+  <!-- Sensor MQ135 -->
+  <g filter="url(#sombra)">
+    <rect x="600" y="180" width="200" height="150" rx="10" fill="#3498DB" stroke="#2874A6" stroke-width="3"/>
+    <text x="700" y="220" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="white">
+      MQ135
+    </text>
+    <text x="700" y="245" font-family="Arial, sans-serif" font-size="13" text-anchor="middle" fill="#EBF5FB">
+      Sensor de Calidad del Aire
+    </text>
+    
+    <circle cx="800" cy="280" r="7" fill="#E74C3C"/>
+    <text x="830" y="286" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#2C3E50">VCC (5V)</text>
+    
+    <circle cx="800" cy="240" r="7" fill="#2C3E50"/>
+    <text x="830" y="246" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#2C3E50">GND</text>
+    
+    <circle cx="800" cy="310" r="7" fill="#27AE60"/>
+    <text x="830" y="316" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#27AE60">A0 (Analógico)</text>
+  </g>
+  
+  <!-- LED Indicador -->
+  <g filter="url(#sombra)">
+    <circle cx="620" cy="420" r="22" fill="#FFD700" stroke="#F39C12" stroke-width="3"/>
+    <line x1="620" y1="398" x2="620" y2="385" stroke="#F39C12" stroke-width="3"/>
+    <line x1="620" y1="442" x2="620" y2="455" stroke="#F39C12" stroke-width="3"/>
+    <text x="620" y="485" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#2C3E50">LED Estado</text>
+    <text x="620" y="502" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#7F8C8D">Indicador Visual</text>
+  </g>
+  
+  <!-- Resistencia LED 220Ω -->
+  <g>
+    <rect x="530" y="412" width="55" height="16" rx="4" fill="white" stroke="#34495E" stroke-width="2"/>
+    <text x="557" y="424" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#2C3E50" font-weight="bold">220Ω</text>
+  </g>
+  
+  <!-- ==================== SECCIÓN CENTRAL: MOSFET Y CONTROL ==================== -->
+  
+  <!-- MOSFET IRLZ44N -->
+  <g filter="url(#sombra)">
+    <rect x="900" y="200" width="130" height="180" rx="10" fill="#16A085" stroke="#0E6655" stroke-width="4"/>
+    <text x="965" y="240" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="white">
+      MOSFET
+    </text>
+    <text x="965" y="262" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#D5F4E6">
+      IRLZ44N
+    </text>
+    <text x="965" y="280" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#A9DFBF">
+      N-Channel
+    </text>
+    
+    <!-- Símbolo del MOSFET -->
+    <line x1="940" y1="210" x2="940" y2="370" stroke="white" stroke-width="3"/>
+    <line x1="955" y1="235" x2="980" y2="235" stroke="white" stroke-width="3"/>
+    <line x1="955" y1="290" x2="980" y2="290" stroke="white" stroke-width="3"/>
+    <line x1="955" y1="345" x2="980" y2="345" stroke="white" stroke-width="3"/>
+    <line x1="980" y1="235" x2="980" y2="200" stroke="white" stroke-width="3"/>
+    <line x1="980" y1="345" x2="980" y2="380" stroke="white" stroke-width="3"/>
+    <path d="M 960 285 L 970 290 L 960 295 Z" fill="white"/>
+    
+    <!-- Pines MOSFET -->
+    <circle cx="895" cy="290" r="7" fill="#3498DB"/>
+    <text x="865" y="296" font-family="Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="end" fill="#2C3E50">G</text>
+    <text x="860" y="312" font-family="Arial, sans-serif" font-size="10" text-anchor="end" fill="#7F8C8D">Gate</text>
+    
+    <circle cx="980" cy="200" r="7" fill="#E74C3C"/>
+    <text x="980" y="188" font-family="Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="middle" fill="#2C3E50">D</text>
+    <text x="980" y="175" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#7F8C8D">Drain</text>
+    
+    <circle cx="980" cy="380" r="7" fill="#2C3E50"/>
+    <text x="980" y="406" font-family="Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="middle" fill="#2C3E50">S</text>
+    <text x="980" y="422" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#7F8C8D">Source</text>
+  </g>
+  
+  <!-- Resistencia Pull-down 10kΩ -->
+  <g>
+    <rect x="770" y="282" width="70" height="16" rx="4" fill="white" stroke="#34495E" stroke-width="2"/>
+    <text x="805" y="294" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#2C3E50" font-weight="bold">10kΩ</text>
+    <text x="805" y="272" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#7F8C8D">Pull-down</text>
+  </g>
+  
+  <!-- ==================== SECCIÓN DERECHA: REGULADOR Y VENTILADOR ==================== -->
+  
+  <!-- Regulador de Voltaje LDO -->
+  <g filter="url(#sombra)">
+    <rect x="1150" y="230" width="180" height="110" rx="10" fill="#8E44AD" stroke="#6C3483" stroke-width="3"/>
+    <text x="1240" y="268" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="white">
+      Regulador LDO
+    </text>
+    <text x="1240" y="292" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#E8DAEF">
+      5V → 1.8V
+    </text>
+    <text x="1240" y="312" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#D7BDE2">
+      (AMS1117-1.8 / LD1117)
+    </text>
+    
+    <circle cx="1150" cy="285" r="7" fill="#E74C3C"/>
+    <text x="1120" y="291" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="end" fill="#2C3E50">IN (5V)</text>
+    
+    <circle cx="1330" cy="285" r="7" fill="#3498DB"/>
+    <text x="1360" y="291" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="start" fill="#2C3E50">OUT (1.8V)</text>
+    
+    <circle cx="1240" cy="340" r="7" fill="#2C3E50"/>
+    <text x="1240" y="363" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#2C3E50">GND</text>
+  </g>
+  
+  <!-- Ventilador DC 1.8V -->
+  <g filter="url(#sombra)">
+    <rect x="1200" y="420" width="180" height="160" rx="10" fill="#E67E22" stroke="#CA6F1E" stroke-width="4"/>
+    <circle cx="1290" cy="500" r="40" fill="none" stroke="white" stroke-width="4"/>
+    <path d="M 1290 460 L 1290 540 M 1250 500 L 1330 500" stroke="white" stroke-width="3"/>
+    <path d="M 1270 480 L 1290 500 L 1310 480" fill="white"/>
+    <path d="M 1310 520 L 1290 500 L 1270 520" fill="white"/>
+    <text x="1290" y="560" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">
+      Ventilador DC
+    </text>
+    <text x="1290" y="445" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+      1.8V
+    </text>
+  </g>
+  
+  <!-- Diodo Flyback 1N4007 -->
+  <g>
+    <line x1="1100" y1="440" x2="1100" y2="490" stroke="#8E44AD" stroke-width="5"/>
+    <path d="M 1090 490 L 1100 505 L 1110 490 Z" fill="#8E44AD"/>
+    <line x1="1090" y1="490" x2="1110" y2="490" stroke="#8E44AD" stroke-width="3"/>
+    <text x="1130" y="465" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#8E44AD">Diodo 1N4007</text>
+    <text x="1130" y="483" font-family="Arial, sans-serif" font-size="11" fill="#7F8C8D">Protección Flyback</text>
+  </g>
+  
+  <!-- Fuente de Alimentación 5V -->
+  <g filter="url(#sombra)">
+    <rect x="1230" y="680" width="160" height="100" rx="10" fill="#C0392B" stroke="#922B21" stroke-width="3"/>
+    <text x="1310" y="720" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="white">
+      Fuente 5V
+    </text>
+    <text x="1310" y="742" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#FADBD8">
+      (USB / Adaptador)
+    </text>
+    <circle cx="1260" cy="760" r="7" fill="#E74C3C"/>
+    <text x="1280" y="766" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">+5V</text>
+    <circle cx="1360" cy="760" r="7" fill="#2C3E50"/>
+    <text x="1380" y="766" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">GND</text>
+  </g>
+  
+  <!-- ==================== CONEXIONES DE CABLES ==================== -->
+  
+  <!-- Riel GND inferior (común) -->
+  <line x1="100" y1="620" x2="1500" y2="620" stroke="#2C3E50" stroke-width="6"/>
+  <text x="800" y="645" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#2C3E50">━━━━━ GND COMÚN (TIERRA) ━━━━━</text>
+  
+  <!-- Riel +5V superior -->
+  <line x1="900" y1="140" x2="1500" y2="140" stroke="#E74C3C" stroke-width="6"/>
+  <text x="1200" y="130" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#E74C3C">━━━ +5V ━━━</text>
+  
+  <!-- Conexión MQ135 VCC a +5V -->
+  <line x1="800" y1="280" x2="850" y2="280" stroke="#E74C3C" stroke-width="3"/>
+  <line x1="850" y1="280" x2="850" y2="140" stroke="#E74C3C" stroke-width="3"/>
+  <line x1="850" y1="140" x2="900" y2="140" stroke="#E74C3C" stroke-width="3"/>
+  
+  <!-- Conexión MQ135 GND -->
+  <line x1="800" y1="240" x2="850" y2="240" stroke="#2C3E50" stroke-width="3"/>
+  <line x1="850" y1="240" x2="850" y2="620" stroke="#2C3E50" stroke-width="3"/>
+  
+  <!-- Conexión MQ135 A0 → ESP32 GPIO34 -->
+  <line x1="800" y1="310" x2="820" y2="310" stroke="#27AE60" stroke-width="3"/>
+  <line x1="820" y1="310" x2="820" y2="270" stroke="#27AE60" stroke-width="3"/>
+  <line x1="820" y1="270" x2="200" y2="270" stroke="#27AE60" stroke-width="3" marker-end="url(#flechaVerde)"/>
+  <text x="500" y="260" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#27AE60">Señal Analógica 0-3.3V</text>
+  
+  <!-- Conexión ESP32 GND -->
+  <line x1="200" y1="350" x2="150" y2="350" stroke="#2C3E50" stroke-width="3"/>
+  <line x1="150" y1="350" x2="150" y2="620" stroke="#2C3E50" stroke-width="3"/>
+  
+  <!-- Conexión ESP32 GPIO25 → MOSFET Gate -->
+  <line x1="480" y1="270" x2="720" y2="270" stroke="#3498DB" stroke-width="3"/>
+  <line x1="720" y1="270" x2="720" y2="290" stroke="#3498DB" stroke-width="3"/>
+  <line x1="720" y1="290" x2="770" y2="290" stroke="#3498DB" stroke-width="3"/>
+  <line x1="840" y1="290" x2="888" y2="290" stroke="#3498DB" stroke-width="3" marker-end="url(#flechaAzul)"/>
+  <text x="650" y="260" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#3498DB">Control PWM (Duty 0-100%)</text>
+  <circle cx="720" cy="290" r="5" fill="#3498DB"/>
+  
+  <!-- Pull-down a GND -->
+  <line x1="720" y1="290" x2="720" y2="620" stroke="#2C3E50" stroke-width="3"/>
+  
+  <!-- Conexión ESP32 GPIO2 → LED -->
+  <line x1="480" y1="350" x2="530" y2="350" stroke="#F39C12" stroke-width="3"/>
+  <line x1="530" y1="350" x2="530" y2="420" stroke="#F39C12" stroke-width="3"/>
+  <line x1="585" y1="420" x2="598" y2="420" stroke="#F39C12" stroke-width="3"/>
+  
+  <!-- LED a GND -->
+  <line x1="620" y1="442" x2="620" y2="620" stroke="#2C3E50" stroke-width="3"/>
+  
+  <!-- ESP32 5V desde fuente -->
+  <line x1="480" y1="490" x2="520" y2="490" stroke="#E74C3C" stroke-width="3"/>
+  <line x1="520" y1="490" x2="520" y2="140" stroke="#E74C3C" stroke-width="3"/>
+  <line x1="520" y1="140" x2="900" y2="140" stroke="#E74C3C" stroke-width="3"/>
+  
+  <!-- Conexión +5V a Regulador IN -->
+  <line x1="1100" y1="140" x2="1100" y2="285" stroke="#E74C3C" stroke-width="4"/>
+  <line x1="1100" y1="285" x2="1143" y2="285" stroke="#E74C3C" stroke-width="4" marker-end="url(#flechaRoja)"/>
+  
+  <!-- Conexión Regulador OUT → Ventilador (+) -->
+  <line x1="1330" y1="285" x2="1380" y2="285" stroke="#3498DB" stroke-width="4"/>
+  <line x1="1380" y1="285" x2="1380" y2="420" stroke="#3498DB" stroke-width="4"/>
+  <line x1="1380" y1="420" x2="1200" y2="420" stroke="#3498DB" stroke-width="4"/>
+  <text x="1380" y="350" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#3498DB">+1.8V</text>
+  
+  <!-- Diodo cátodo a +1.8V -->
+  <line x1="1100" y1="440" x2="1100" y2="420" stroke="#3498DB" stroke-width="4"/>
+  <line x1="1100" y1="420" x2="1200" y2="420" stroke="#3498DB" stroke-width="4"/>
+  <circle cx="1100" cy="420" r="6" fill="#3498DB"/>
+  
+  <!-- Ventilador (-) → MOSFET Drain -->
+  <line x1="1290" y1="580" x2="1290" y2="610" stroke="#2C3E50" stroke-width="4"/>
+  <line x1="1290" y1="610" x2="1100" y2="610" stroke="#2C3E50" stroke-width="4"/>
+  <line x1="1100" y1="610" x2="1100" y2="505" stroke="#2C3E50" stroke-width="4"/>
+  <line x1="1100" y1="610" x2="980" y2="610" stroke="#2C3E50" stroke-width="4"/>
+  <line x1="980" y1="610" x2="980" y2="200" stroke="#2C3E50" stroke-width="4" marker-end="url(#flechaNegra)"/>
+  <circle cx="1100" cy="610" r="6" fill="#2C3E50"/>
+  
+  <!-- MOSFET Source a GND -->
+  <line x1="980" y1="380" x2="980" y2="620" stroke="#2C3E50" stroke-width="4"/>
+  <circle cx="980" cy="620" r="6" fill="#2C3E50"/>
+  
+  <!-- Regulador GND -->
+  <line x1="1240" y1="340" x2="1240" y2="620" stroke="#2C3E50" stroke-width="3"/>
+  
+  <!-- Fuente principal -->
+  <line x1="1260" y1="760" x2="1260" y2="800" stroke="#E74C3C" stroke-width="4"/>
+  <line x1="1260" y1="800" x2="1100" y2="800" stroke="#E74C3C" stroke-width="4"/>
+  <line x1="1100" y1="800" x2="1100" y2="140" stroke="#E74C3C" stroke-width="4"/>
+  
+  <line x1="1360" y1="760" x2="1360" y2="820" stroke="#2C3E50" stroke-width="4"/>
+  <line x1="1360" y1="820" x2="100" y2="820" stroke="#2C3E50" stroke-width="4"/>
+  <line x1="100" y1="820" x2="100" y2="620" stroke="#2C3E50" stroke-width="4"/>
+  
+  <!-- Nodos de conexión -->
+  <circle cx="720" cy="620" r="6" fill="#2C3E50"/>
+  <circle cx="620" cy="620" r="6" fill="#2C3E50"/>
+  <circle cx="850" cy="620" r="6" fill="#2C3E50"/>
+  <circle cx="1240" cy="620" r="6" fill="#2C3E50"/>
+  <circle cx="150" cy="620" r="6" fill="#2C3E50"/>
+  
+  <!-- ==================== LEYENDA Y NOTAS ==================== -->
+  
+  <!-- Sección de leyenda -->
+  <rect x="80" y="870" width="1440" height="40" rx="8" fill="#34495E"/>
+  <text x="800" y="896" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="white">
+    FLUJO DE SEÑALES Y ALIMENTACIÓN
+  </text>
+  
+  <!-- Leyenda de colores -->
+  <g>
+    <circle cx="130" cy="950" r="12" fill="#27AE60"/>
+    <text x="155" y="956" font-family="Arial, sans-serif" font-size="14" fill="#2C3E50">
+      <tspan font-weight="bold">Señal Analógica:</tspan> MQ135 (A0) → GPIO34 — Proporcional a PPM de gases
+    </text>
+    
+    <circle cx="130" cy="985" r="12" fill="#3498DB"/>
+    <text x="155" y="991" font-family="Arial, sans-serif" font-size="14" fill="#2C3E50">
+      <tspan font-weight="bold">Control PWM:</tspan> GPIO25 → Gate MOSFET — Duty cycle 0-100% regula velocidad
+    </text>
+    
+    <circle cx="850" cy="950" r="12" fill="#E74C3C"/>
+    <text x="875" y="956" font-family="Arial, sans-serif" font-size="14" fill="#2C3E50">
+      <tspan font-weight="bold">Alimentación +5V:</tspan> Fuente USB → Regulador 1.8V y Sensor MQ135
+    </text>
+    
+    <circle cx="850" cy="985" r="12" fill="#2C3E50"/>
+    <text x="875" y="991" font-family="Arial, sans-serif" font-size="14" fill="#2C3E50">
+      <tspan font-weight="bold">Tierra Común (GND):</tspan> Conexión compartida entre todos los componentes del sistema
+    </text>
+  </g>
+  
+  <!-- Cuadro de especificaciones técnicas -->
+  <g filter="url(#sombra)">
+    <rect x="80" y="1020" width="700" height="60" rx="8" fill="#D5F4E6" stroke="#16A085" stroke-width="3"/>
+    <text x="430" y="1043" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#0E6655">
+      ⚙️ Especificaciones de Componentes
+    </text>
+    <text x="100" y="1065" font-family="Arial, sans-serif" font-size="12" fill="#0E6655">
+      • MOSFET IRLZ44N: VDS 55V, ID 47A, RDS(on) 0.022Ω  • Resistencia Pull-down: 10kΩ  • Diodo: 1N4007 (1A, 1000V)  • Regulador: AMS1117-1.8 (800mA)
+    </text>
+  </g>
+  
+  <!-- Cuadro de ventajas MOSFET -->
+  <g filter="url(#sombra)">
+    <rect x="800" y="1020" width="720" height="60" rx="8" fill="#FCF3CF" stroke="#F39C12" stroke-width="3"/>
+    <text x="1160" y="1043" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#9A7D0A">
+      ⚡ Ventajas del MOSFET vs TIP120
+    </text>
+    <text x="820" y="1065" font-family="Arial, sans-serif" font-size="12" fill="#7D6608">
+      ✓ Mayor eficiencia (RDS muy bajo)  ✓ Sin calentamiento  ✓ Conmutación rápida (ideal para PWM)  ✓ Control por voltaje (no consume corriente)
+    </text>
+  </g>
+</svg>

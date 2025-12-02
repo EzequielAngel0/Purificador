@@ -1,0 +1,142 @@
+<svg viewBox="0 0 1280 640" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#020617;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#0b1120;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#020817;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glowGradient" cx="50%" cy="50%">
+      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#020617;stop-opacity:0" />
+    </radialGradient>
+    <linearGradient id="phoneGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e293b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a5f;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#0f1e3a;stop-opacity:0.8" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.4" flood-color="#000000"/>
+    </filter>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748b" />
+    </marker>
+  </defs>
+  
+  <rect width="1280" height="640" fill="url(#bgGradient)"/>
+  
+  <ellipse cx="640" cy="320" rx="600" ry="400" fill="url(#glowGradient)"/>
+  
+  <text x="120" y="200" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="56" font-weight="700" fill="#e5e7eb">
+    Air Purifier App
+  </text>
+  
+  <text x="120" y="240" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="400" fill="#9ca3af">
+    ESP32 + MQ135 + Ventilador PWM + React Native + Supabase
+  </text>
+  
+  <g filter="url(#shadow)">
+    <rect x="140" y="300" width="100" height="60" rx="8" fill="#3498db" opacity="0.9"/>
+    <text x="190" y="335" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">
+      MQ135
+    </text>
+  </g>
+  
+  <line x1="240" y1="330" x2="290" y2="330" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  
+  <g filter="url(#shadow)">
+    <rect x="300" y="300" width="100" height="60" rx="8" fill="#16a085" opacity="0.9"/>
+    <text x="350" y="335" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">
+      ESP32
+    </text>
+  </g>
+  
+  <line x1="400" y1="330" x2="450" y2="330" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  
+  <g filter="url(#shadow)">
+    <rect x="460" y="300" width="120" height="60" rx="8" fill="#e67e22" opacity="0.9"/>
+    <text x="520" y="328" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle">
+      Ventilador
+    </text>
+    <text x="520" y="347" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="400" fill="#ffffff" text-anchor="middle">
+      1.8V PWM
+    </text>
+  </g>
+  
+  <path d="M 350 360 L 350 420 L 490 420" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  
+  <g filter="url(#shadow)">
+    <rect x="500" y="395" width="100" height="50" rx="8" fill="#6366f1" opacity="0.9"/>
+    <text x="550" y="425" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle">
+      Supabase
+    </text>
+  </g>
+  
+  <g filter="url(#shadow)">
+    <rect x="850" y="120" width="320" height="480" rx="24" fill="url(#phoneGradient)" stroke="#334155" stroke-width="3"/>
+    
+    <rect x="870" y="160" width="280" height="400" rx="12" fill="#020817"/>
+    
+    <rect x="890" y="190" width="240" height="140" rx="10" fill="url(#cardGradient)" stroke="#0ea5e9" stroke-width="1"/>
+    
+    <text x="1010" y="220" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="500" fill="#94a3b8" text-anchor="middle">
+      Calidad del Aire
+    </text>
+    
+    <text x="1010" y="260" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="36" font-weight="700" fill="#f59e0b" text-anchor="middle">
+      120
+    </text>
+    
+    <text x="1010" y="290" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="600" fill="#fbbf24" text-anchor="middle">
+      MODERADA
+    </text>
+    
+    <circle cx="1010" cy="310" r="3" fill="#fbbf24" opacity="0.8"/>
+    
+    <g filter="url(#glow)">
+      <circle cx="1010" cy="420" r="50" fill="none" stroke="#0ea5e9" stroke-width="2" opacity="0.6"/>
+      
+      <path d="M 1010 370 L 1010 420 L 1045 395" stroke="#e5e7eb" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+      <path d="M 1010 370 L 1010 420 L 975 395" stroke="#e5e7eb" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+      <path d="M 1010 370 L 1010 420 L 1010 455" stroke="#e5e7eb" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+      <path d="M 1010 370 L 1010 420 L 1030 445" stroke="#e5e7eb" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+      
+      <circle cx="1010" cy="420" r="12" fill="#1e293b" stroke="#0ea5e9" stroke-width="2"/>
+    </g>
+    
+    <text x="1010" y="500" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="500" fill="#64748b" text-anchor="middle">
+      Ventilador: 50%
+    </text>
+    
+    <circle cx="1010" cy="540" r="6" fill="#0ea5e9"/>
+    <circle cx="990" cy="540" r="6" fill="#334155"/>
+    <circle cx="1030" cy="540" r="6" fill="#334155"/>
+  </g>
+  
+  <g opacity="0.7">
+    <circle cx="200" cy="100" r="2" fill="#0ea5e9"/>
+    <circle cx="450" cy="80" r="1.5" fill="#0ea5e9"/>
+    <circle cx="350" cy="520" r="2" fill="#0ea5e9"/>
+    <circle cx="700" cy="150" r="1" fill="#0ea5e9"/>
+    <circle cx="180" cy="480" r="1.5" fill="#0ea5e9"/>
+  </g>
+  
+  <text x="1200" y="610" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="400" fill="#6b7280" text-anchor="end">
+    Closed-loop air quality control
+  </text>
+  
+  <g opacity="0.4">
+    <rect x="120" y="560" width="30" height="2" rx="1" fill="#0ea5e9"/>
+    <rect x="160" y="560" width="50" height="2" rx="1" fill="#0ea5e9"/>
+    <rect x="220" y="560" width="40" height="2" rx="1" fill="#0ea5e9"/>
+  </g>
+</svg>
